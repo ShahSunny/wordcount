@@ -1,6 +1,8 @@
 package org.sunny.wordcount;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 import org.apache.hadoop.conf.Configured;
@@ -61,7 +63,7 @@ public class AppRunner extends Configured implements Tool {
 	private Path[] filterOutPaths(String path) {
 		LinkedList<Path> listOfInputFiles = new LinkedList<Path>();		
 		try {
-			final FileSystem fs = FileSystem.get(getConf());
+			final FileSystem fs = FileSystem.get(new URI(path),getConf());
 			RemoteIterator<LocatedFileStatus> fileStatusListIterator = fs.listFiles(new Path(path), true);
 			while(fileStatusListIterator.hasNext()){
 		        LocatedFileStatus fileStatus = fileStatusListIterator.next();
@@ -75,7 +77,10 @@ public class AppRunner extends Configured implements Tool {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		return null;
 	}
 }
