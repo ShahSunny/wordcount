@@ -25,6 +25,7 @@ public class CombinedTextInputFormatReader extends
 		int count = 1;
 		for(Path path:paths) {
 			logger.info(" [ " + count + " ] " + path.toString());
+			count++;
 		}
 		logger.info("******************************************************End********************");
 	}
