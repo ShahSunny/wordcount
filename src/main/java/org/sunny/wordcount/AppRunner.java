@@ -50,6 +50,7 @@ public class AppRunner extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         job.setInputFormatClass(CombinedTextInputFormat.class);
+
         Path[] paths = filterOutPaths(args[0]);
         //to accept the hdfs input and outpur dir at run time        
         FileInputFormat.setInputPaths(job, paths);
@@ -69,7 +70,7 @@ public class AppRunner extends Configured implements Tool {
 			while(fileStatusListIterator.hasNext()){
 		        LocatedFileStatus fileStatus = fileStatusListIterator.next();
 		        if(fileStatus.isFile()) {
-		        	if(fileStatus.getPath().getName().matches(".*((\\.c)|(\\.cpp)|(\\.h))$")) {		        	
+		        	if(fileStatus.getPath().getName().matches("^[a-zA-Z0-9].*((\\.c)|(\\.cpp)|(\\.h))$")) {		        	
 		        		listOfInputFiles.add(fileStatus.getPath());
 		        	}
 		        }
