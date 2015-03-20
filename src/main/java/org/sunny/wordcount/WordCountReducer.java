@@ -11,9 +11,10 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
 public class WordCountReducer extends
-		Reducer<Text, IntWritable, Text, IntWritable> {
+WordCountCombiner {
 	Logger logger = Logger.getLogger(WordCountReducer.class);
 	int threasoldForCount = 10;
+	
 	@Override
 	protected void setup(org.apache.hadoop.mapreduce.Reducer<Text,IntWritable,Text,IntWritable>.Context context) throws IOException ,InterruptedException {
 		super.setup(context);
@@ -28,14 +29,7 @@ public class WordCountReducer extends
 	};
 
 	@Override
-	protected void reduce(Text key, Iterable<IntWritable> values,
-			Reducer<Text, IntWritable, Text, IntWritable>.Context context)
-			throws IOException, InterruptedException {
-		int count = 0;
-		for(IntWritable value:values) {
-			count += value.get();
-		}
-		if(count > threasoldForCount)
-			context.write(key,new IntWritable(count));
+	protected boolean shallWrite(int count) {
+		return (count > threasoldForCount);
 	}
 }

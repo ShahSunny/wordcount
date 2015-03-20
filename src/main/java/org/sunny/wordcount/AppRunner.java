@@ -44,7 +44,7 @@ public class AppRunner extends Configured implements Tool {
         job.setJarByClass(AppRunner.class);
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
-        job.setCombinerClass(WordCountReducer.class);
+        job.setCombinerClass(WordCountCombiner.class);
         job.setNumReduceTasks(1);
         //setting the output data type classes
         job.setOutputKeyClass(Text.class);
@@ -73,7 +73,7 @@ public class AppRunner extends Configured implements Tool {
 		        		listOfInputFiles.add(fileStatus.getPath());
 		        	}
 		        }
-			}		
+			}
 			return listOfInputFiles.toArray(new Path[listOfInputFiles.size()]);			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
