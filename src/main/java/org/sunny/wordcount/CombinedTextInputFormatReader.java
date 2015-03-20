@@ -22,8 +22,9 @@ public class CombinedTextInputFormatReader extends
 	public CombinedTextInputFormatReader(CombineFileSplit inputSplit, TaskAttemptContext taskContext) {
 		paths = inputSplit.getPaths();
 		logger.info("******************************************************Start********************");
+		int count = 1;
 		for(Path path:paths) {
-			logger.info(path.toString());
+			logger.info(" [ " + count + " ] " + path.toString());
 		}
 		logger.info("******************************************************End********************");
 	}
