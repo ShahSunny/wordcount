@@ -44,12 +44,12 @@ public class AppRunner extends Configured implements Tool {
         job.setJarByClass(AppRunner.class);
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
-        job.setCombinerClass(WordCountCombiner.class);
+        job.setCombinerClass(WordCountCombiner.class);        
         job.setNumReduceTasks(1);
         //setting the output data type classes
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        //job.setInputFormatClass(CombineTextInputFormat.class);
+        job.setInputFormatClass(CombinedTextInputFormat.class);
         Path[] paths = filterOutPaths(args[0]);
         //to accept the hdfs input and outpur dir at run time        
         FileInputFormat.setInputPaths(job, paths);
