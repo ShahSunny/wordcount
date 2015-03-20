@@ -18,15 +18,15 @@ public class WordCountReducer extends
 	protected void setup(org.apache.hadoop.mapreduce.Reducer<Text,IntWritable,Text,IntWritable>.Context context) throws IOException ,InterruptedException {
 		super.setup(context);
 		Configuration conf =  context.getConfiguration();
-		threasoldForCount = conf.getInt("threasold-for-count", 10);
+		threasoldForCount = conf.getInt("threasold_count", 10);
 		logger.info("*****************************************************************");
 		logger.info("In setup");
 		logger.info("*****************************************************************");
-		
+
 		FileSystem.create(FileSystem.get(conf), new Path("/tmp/threasoldForCount_" + threasoldForCount), FsPermission.getDefault());
 		logger.info("threasold-for-count = " + threasoldForCount);
 	};
-	
+
 	@Override
 	protected void reduce(Text key, Iterable<IntWritable> values,
 			Reducer<Text, IntWritable, Text, IntWritable>.Context context)
