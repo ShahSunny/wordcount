@@ -10,8 +10,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
-public class WordCountReducer extends
-WordCountCombiner {
+public class WordCountReducer extends WordCountCombiner {
 	Logger logger = Logger.getLogger(WordCountReducer.class);
 	int threasoldForCount = 10;
 	
