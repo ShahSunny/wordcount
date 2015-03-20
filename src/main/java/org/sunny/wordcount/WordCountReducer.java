@@ -8,21 +8,23 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.log4j.Logger;
 
 public class WordCountReducer extends
 		Reducer<Text, IntWritable, Text, IntWritable> {
+	Logger logger = Logger.getLogger(WordCountReducer.class);
 	int threasoldForCount = 10;
 	@Override
 	protected void setup(org.apache.hadoop.mapreduce.Reducer<Text,IntWritable,Text,IntWritable>.Context context) throws IOException ,InterruptedException {
-		System.out.println("*****************************************************************");
-		System.out.println("In setup");
-		System.out.println("*****************************************************************");
-		
 		super.setup(context);
 		Configuration conf =  context.getConfiguration();
-		threasoldForCount = conf.getInt("threasold-for-count", 10);		
+		threasoldForCount = conf.getInt("threasold-for-count", 10);
+		logger.info("*****************************************************************");
+		logger.info("In setup");
+		logger.info("*****************************************************************");
+		
 		FileSystem.create(FileSystem.get(conf), new Path("/tmp/threasoldForCount_" + threasoldForCount), FsPermission.getDefault());
-		System.out.println("threasold-for-count = " + threasoldForCount);
+		logger.info("threasold-for-count = " + threasoldForCount);
 	};
 	
 	@Override
