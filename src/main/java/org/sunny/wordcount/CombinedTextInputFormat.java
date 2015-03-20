@@ -15,7 +15,11 @@ import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 
 
 public class CombinedTextInputFormat extends CombineFileInputFormat<LongWritable, Text> {
-
+	
+	public CombinedTextInputFormat() {
+		super();
+		setMaxSplitSize(1024 * 1024 * 64);
+	}
 	@Override
 	protected boolean isSplitable(JobContext context, Path file) {
 		return false;
@@ -27,6 +31,5 @@ public class CombinedTextInputFormat extends CombineFileInputFormat<LongWritable
 		CombineFileSplit combineFileSplit = (CombineFileSplit) inputSplit; 
 		return new CombinedTextInputFormatReader(combineFileSplit, taskContext);
 	}
-	
 	
 }
