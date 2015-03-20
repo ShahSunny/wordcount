@@ -33,10 +33,10 @@ public class AppRunner extends Configured implements Tool {
 	
 	public int run(String[] args) throws Exception {
 		logger.debug("In AppRunner::Run");
-		Configuration conf = getConf();
-		conf.set("fs.defaultFS", "file:///");
-		conf.set("mapreduce.framework.name", "local");
-		setConf(conf);
+		//Configuration conf = getConf();
+		//conf.set("fs.defaultFS", "file:///");
+		//conf.set("mapreduce.framework.name", "local");
+		//setConf(conf);
 		Job job = Job.getInstance(getConf());
         job.setJobName("Word Count");
 
