@@ -16,8 +16,8 @@ public class CombinedTextInputFormatReader extends
 
 	Logger logger = Logger.getLogger(CombinedTextInputFormatReader.class);
 	private Path[] paths;
-	private LongWritable key;
-	private Text value;
+	private LongWritable key = new LongWritable();
+	private Text value = new Text();
 	RecordReaderInternal recordReaderInternal;
 	public CombinedTextInputFormatReader(CombineFileSplit inputSplit, TaskAttemptContext taskContext) {
 		paths = inputSplit.getPaths();
