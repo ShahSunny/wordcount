@@ -10,7 +10,6 @@ import com.google.inject.spi.TypeListener;
 
 public class Log4JTypeListener implements TypeListener {
 
-	@Override
 	public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
 		Class<?> clazz = typeLiteral.getRawType();
 	      while (clazz != null) {

@@ -18,9 +18,10 @@ public class CombinedTextInputFormatReader extends
 	private Path[] paths;
 	private LongWritable key;
 	private Text value;
-
+	RecordReaderInternal recordReaderInternal;
 	public CombinedTextInputFormatReader(CombineFileSplit inputSplit, TaskAttemptContext taskContext) {
 		paths = inputSplit.getPaths();
+		recordReaderInternal = new RecordReaderInternal(paths, taskContext.getConfiguration());
 		logger.info("******************************************************Start********************");
 		int count = 1;
 		for(Path path:paths) {
@@ -32,6 +33,7 @@ public class CombinedTextInputFormatReader extends
 
 	@Override
 	public void close() throws IOException {
+		recordReaderInternal.close();
 		// TODO Auto-generated method stub
 	}
 
@@ -48,19 +50,25 @@ public class CombinedTextInputFormatReader extends
 
 	@Override
 	public float getProgress() throws IOException, InterruptedException {
-		return 0;
+		return recordReaderInternal.getProgress();
 	}
 
 	@Override
 	public void initialize(InputSplit arg0, TaskAttemptContext arg1)
 			throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		return false;
+		boolean isReadSuccessful = recordReaderInternal.nextKeyValue();
+		if(isReadSuccessful) {
+			long position = recordReaderInternal.getPosition();
+			key.set(position);
+			String line = recordReaderInternal.getCurrentLine();
+			value.set(line);
+		}
+		return isReadSuccessful;
 	}
 
 }

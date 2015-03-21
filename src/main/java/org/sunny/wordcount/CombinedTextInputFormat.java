@@ -2,7 +2,6 @@ package org.sunny.wordcount;
 
 import java.io.IOException;
 
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -31,5 +30,4 @@ public class CombinedTextInputFormat extends CombineFileInputFormat<LongWritable
 		CombineFileSplit combineFileSplit = (CombineFileSplit) inputSplit; 
 		return new CombinedTextInputFormatReader(combineFileSplit, taskContext);
 	}
-	
 }
