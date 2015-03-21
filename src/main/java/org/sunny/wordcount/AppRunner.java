@@ -5,12 +5,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.*;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.SnappyCodec;
 //import org.apache.hadoop.mapred.lib.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -32,13 +35,15 @@ public class AppRunner extends Configured implements Tool {
 	
 	public int run(String[] args) throws Exception {
 		logger.debug("In AppRunner::Run");
-		//Configuration conf = getConf();
+		Configuration conf = getConf();
+		conf.setBoolean(Job.MAP_OUTPUT_COMPRESS, true);
+		conf.setClass(Job.MAP_OUTPUT_COMPRESS_CODEC, SnappyCodec.class, CompressionCodec.class);
 		//conf.set("fs.defaultFS", "file:///");
 		//conf.set("mapreduce.framework.name", "local");
-		//setConf(conf);
+		setConf(conf);
 		Job job = Job.getInstance(getConf());
         job.setJobName("Word Count");
-
+        
         //setting the class names
         job.setJarByClass(AppRunner.class);
         job.setMapperClass(WordCountMapper.class);

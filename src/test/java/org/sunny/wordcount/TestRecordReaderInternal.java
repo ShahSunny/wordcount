@@ -118,8 +118,6 @@ public class TestRecordReaderInternal {
 		List<String> list = readAll(recordReader);
 		displayArray(list, "Expected");
 		Assert.assertArrayEquals(data, list.toArray());
-		
-		
 	}
 
 }
