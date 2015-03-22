@@ -67,7 +67,8 @@ public class AppRunner extends Configured implements Tool {
 
         boolean success = job.waitForCompletion(true);
     	if(success) {
-    		sortData(outputLocation,args[1]);
+    		String sortedOutput = args[1]+"/sorted/";
+    		sortData(outputLocation,sortedOutput);
     	} else {
     		System.exit(1);
     	}
@@ -76,7 +77,7 @@ public class AppRunner extends Configured implements Tool {
 	}
 
 
-	private void sortData(String outputLocation, String inputLocation) throws IOException, ClassNotFoundException, InterruptedException {
+	private void sortData(String inputLocation, String outputLocation) throws IOException, ClassNotFoundException, InterruptedException {
 		Job job = Job.getInstance(getConf());
         job.setJobName("Word Count Sort");
         //setting the class names
