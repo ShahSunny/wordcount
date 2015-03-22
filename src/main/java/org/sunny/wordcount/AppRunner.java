@@ -28,6 +28,22 @@ import org.sunny.wordcount.DI.InjectLogger;
 import com.google.inject.Inject;
 
 public class AppRunner extends Configured implements Tool {
+	
+	public static class DescendingKeyComparator extends WritableComparator {
+	    protected DescendingKeyComparator() {
+	        super(IntWritable.class, true);
+	    }
+
+	    @SuppressWarnings("rawtypes")
+		@Override
+	    public int compare(WritableComparable w1, WritableComparable w2) {
+	    	IntWritable key1 = (IntWritable) w1;
+	    	IntWritable key2 = (IntWritable) w2;          
+	        return -1 * key1.compareTo(key2);
+	    }
+	}
+
+	
 	final String tmpLocation = "/tmpLocation/";
 	@InjectLogger Logger logger;
 	@Inject
@@ -88,6 +104,7 @@ public class AppRunner extends Configured implements Tool {
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
         job.setInputFormatClass(KeyValueTextInputFormat.class);
+        job.setSortComparatorClass(DescendingKeyComparator.class);
         //to accept the hdfs input and outpur dir at run time        
         FileInputFormat.setInputPaths(job, new Path(inputLocation));        
         FileOutputFormat.setOutputPath(job, new Path(outputLocation));
