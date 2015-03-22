@@ -15,7 +15,6 @@ import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.SnappyCodec;
-import org.apache.hadoop.mapred.lib.IdentityReducer;
 //import org.apache.hadoop.mapred.lib.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -61,33 +60,33 @@ public class AppRunner extends Configured implements Tool {
 		//conf.set("fs.defaultFS", "file:///");
 		//conf.set("mapreduce.framework.name", "local");
 		setConf(conf);
-//		Job job = Job.getInstance(getConf());
-//        job.setJobName("Word Count");
-//        
-//        //setting the class names
-//        job.setJarByClass(AppRunner.class);
-//        job.setMapperClass(WordCountMapper.class);
-//        job.setReducerClass(WordCountReducer.class);
-//        job.setCombinerClass(WordCountCombiner.class);        
-//        job.setNumReduceTasks(1);
-//        //setting the output data type classes
-//        job.setOutputKeyClass(Text.class);
-//        job.setOutputValueClass(IntWritable.class);
-//        job.setInputFormatClass(CombinedTextInputFormat.class);
-//
-//        Path[] paths = filterOutPaths(args[0]);
-//        //to accept the hdfs input and outpur dir at run time        
-//        FileInputFormat.setInputPaths(job, paths);
+		Job job = Job.getInstance(getConf());
+        job.setJobName("Word Count");
+        
+        //setting the class names
+        job.setJarByClass(AppRunner.class);
+        job.setMapperClass(WordCountMapper.class);
+        job.setReducerClass(WordCountReducer.class);
+        job.setCombinerClass(WordCountCombiner.class);        
+        job.setNumReduceTasks(1);
+        //setting the output data type classes
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        job.setInputFormatClass(CombinedTextInputFormat.class);
+
+        Path[] paths = filterOutPaths(args[0]);
+        //to accept the hdfs input and outpur dir at run time        
+        FileInputFormat.setInputPaths(job, paths);
         String outputLocation = args[1] + tmpLocation;
-//        FileOutputFormat.setOutputPath(job, new Path(outputLocation));
-//
-//        boolean success = job.waitForCompletion(true);
-//    	if(success) {
+        FileOutputFormat.setOutputPath(job, new Path(outputLocation));
+
+        boolean success = job.waitForCompletion(true);
+    	if(success) {
     		String sortedOutput = args[1]+"/sorted/";
     		sortData(outputLocation,sortedOutput);
-//    	} else {
-//    		System.exit(1);
-//    	}
+    	} else {
+    		System.exit(1);
+    	}
     	
 		return 0;
 	}
