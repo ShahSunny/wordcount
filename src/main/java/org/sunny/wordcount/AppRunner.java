@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
+import org.apache.commons.collections.map.IdentityMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -14,9 +15,11 @@ import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.SnappyCodec;
+import org.apache.hadoop.mapred.lib.IdentityReducer;
 //import org.apache.hadoop.mapred.lib.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Logger;
@@ -25,6 +28,7 @@ import org.sunny.wordcount.DI.InjectLogger;
 import com.google.inject.Inject;
 
 public class AppRunner extends Configured implements Tool {
+	final String tmpLocation = "/tmpLocation/";
 	@InjectLogger Logger logger;
 	@Inject
 	public AppRunner() {
@@ -58,11 +62,36 @@ public class AppRunner extends Configured implements Tool {
         Path[] paths = filterOutPaths(args[0]);
         //to accept the hdfs input and outpur dir at run time        
         FileInputFormat.setInputPaths(job, paths);
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        String outputLocation = args[1] + tmpLocation;
+        FileOutputFormat.setOutputPath(job, new Path(outputLocation));
 
         boolean success = job.waitForCompletion(true);
-    	System.exit(success ? 0 : 1);
+    	if(success) {
+    		sortData(outputLocation,args[1]);
+    	} else {
+    		System.exit(1);
+    	}
+    	
 		return 0;
+	}
+
+
+	private void sortData(String outputLocation, String inputLocation) throws IOException, ClassNotFoundException, InterruptedException {
+		Job job = Job.getInstance(getConf());
+        job.setJobName("Word Count Sort");
+        //setting the class names
+        job.setJarByClass(AppRunner.class);
+        job.setMapperClass(SortMapper.class);                        
+        job.setNumReduceTasks(1);
+        //setting the output data type classes
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
+        job.setInputFormatClass(KeyValueTextInputFormat.class);
+        //to accept the hdfs input and outpur dir at run time        
+        FileInputFormat.setInputPaths(job, new Path(inputLocation));        
+        FileOutputFormat.setOutputPath(job, new Path(outputLocation));
+        boolean success = job.waitForCompletion(true);
+        System.exit(success ? 0 : 1);
 	}
 
 
