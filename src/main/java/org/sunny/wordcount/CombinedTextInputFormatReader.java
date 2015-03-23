@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
@@ -12,12 +13,11 @@ import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 import org.apache.log4j.Logger;
 
 public class CombinedTextInputFormatReader extends
-		RecordReader<LongWritable, Text> {
+		RecordReader<Text, NullWritable> {
 
 	Logger logger = Logger.getLogger(CombinedTextInputFormatReader.class);
-	private Path[] paths;
-	private LongWritable key = new LongWritable();
-	private Text value = new Text();
+	private Path[] paths;	
+	private Text key = new Text();
 	RecordReaderInternal recordReaderInternal;
 	public CombinedTextInputFormatReader(CombineFileSplit inputSplit, TaskAttemptContext taskContext) {
 		paths = inputSplit.getPaths();
@@ -38,14 +38,14 @@ public class CombinedTextInputFormatReader extends
 	}
 
 	@Override
-	public LongWritable getCurrentKey() throws IOException,
+	public Text getCurrentKey() throws IOException,
 			InterruptedException {
 		return key;
 	}
 
 	@Override
-	public Text getCurrentValue() throws IOException, InterruptedException {
-		return value;
+	public NullWritable getCurrentValue() throws IOException, InterruptedException {
+		return NullWritable.get();
 	}
 
 	@Override
@@ -63,10 +63,10 @@ public class CombinedTextInputFormatReader extends
 	public boolean nextKeyValue() throws IOException, InterruptedException {
 		boolean isReadSuccessful = recordReaderInternal.nextKeyValue();
 		if(isReadSuccessful) {
-			long position = recordReaderInternal.getPosition();
-			key.set(position);
+//			long position = recordReaderInternal.getPosition();
+//			key.set(position);
 			String line = recordReaderInternal.getCurrentLine();
-			value.set(line);
+			key.set(line);
 		}
 		return isReadSuccessful;
 	}

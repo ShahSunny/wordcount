@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
-import org.apache.commons.collections.map.IdentityMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -15,11 +14,12 @@ import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.SnappyCodec;
-//import org.apache.hadoop.mapred.lib.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.partition.InputSampler;
+import org.apache.hadoop.mapreduce.lib.partition.TotalOrderPartitioner;
 import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Logger;
 import org.sunny.wordcount.DI.InjectLogger;
@@ -67,8 +67,16 @@ public class AppRunner extends Configured implements Tool {
         job.setJarByClass(AppRunner.class);
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
-        job.setCombinerClass(WordCountCombiner.class);        
-        job.setNumReduceTasks(1);
+        job.setCombinerClass(WordCountCombiner.class);
+        job.setPartitionerClass(TotalOrderPartitioner.class);
+        job.setNumReduceTasks(4);
+        
+        RecordsSampler sampler = new RecordsSampler(10000, 100);
+        InputSampler.writePartitionFile(job, sampler);        
+        String partitionFile = TotalOrderPartitioner.getPartitionFile(conf);
+        URI partitionUri = new URI(partitionFile);
+        job.addCacheFile(partitionUri);
+        
         //setting the output data type classes
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
