@@ -70,13 +70,6 @@ public class AppRunner extends Configured implements Tool {
         job.setCombinerClass(WordCountCombiner.class);
         job.setPartitionerClass(TotalOrderPartitioner.class);
         job.setNumReduceTasks(4);
-        
-        RecordsSampler sampler = new RecordsSampler(10000, 100);
-        InputSampler.writePartitionFile(job, sampler);        
-        String partitionFile = TotalOrderPartitioner.getPartitionFile(conf);
-        URI partitionUri = new URI(partitionFile);
-        job.addCacheFile(partitionUri);
-        
         //setting the output data type classes
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
@@ -87,7 +80,13 @@ public class AppRunner extends Configured implements Tool {
         FileInputFormat.setInputPaths(job, paths);
         String outputLocation = args[1] + tmpLocation;
         FileOutputFormat.setOutputPath(job, new Path(outputLocation));
-
+        
+        RecordsSampler sampler = new RecordsSampler(10000, 100);
+        InputSampler.writePartitionFile(job, sampler);        
+        String partitionFile = TotalOrderPartitioner.getPartitionFile(conf);
+        URI partitionUri = new URI(partitionFile);
+        job.addCacheFile(partitionUri);
+        
         boolean success = job.waitForCompletion(true);
     	if(success) {
     		String sortedOutput = args[1]+"/sorted/";
